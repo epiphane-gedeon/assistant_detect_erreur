@@ -1,29 +1,58 @@
-from app import app, db
-from typing import Union
+from app import app
+from app.functions import conn_db
+from app.models import FAQ
+from app.validators import FAQResponse
+from assistant import Assistant 
+from typing import Union, List, Optional
+from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException
+from langchain_core.messages import HumanMessage
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+get_db = conn_db("faqdb", "faquser", "faqpass", "localhost", "5432")
+
+db_session = get_db
+
+assist=Assistant(base_url="http://116.109.110.233:55209")
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
 
-@app.get("/faq")
-def get_faq():
+from pydantic import BaseModel
+
+class QuestionRequest(BaseModel):
+    question: str
+
+@app.post("/ask")
+def ask_question(request: QuestionRequest):
+    messages = [HumanMessage(
+        content=[
+            {"type": "text", "text": request.question},
+        ]
+    )]
     
-    cur = db.conn.cursor()
-
-    # Requête SELECT
-    cur.execute("SELECT id, question, procede FROM FAQ ORDER BY id;")
-    faqs = cur.fetchall()
+    # [HumanMessage(
+    #     content=[
+    #         {"type": "text", "text": "Please provide a detailed answer."},
+    #     ]
+    # )]
     
-    faqs_list = []
-    for faq in faqs:
-        faqs_list.append({
-            "id": faq[0],
-            "question": faq[1],
-            "procede": faq[2]
-        })
-    return faqs_list
+    result = assist.chat(messages)
+    return result['response']
+
+# @app.get("/ask")
+# def read_root():
+#     test_question = "Je n'arrive pas à me connecter à mon compte"
+
+#     messages = [HumanMessage(
+#         content=[
+#             {"type": "text", "text": test_question},
+#             # {
+#             #     "type": "image_url",
+#             #     "image_url": {
+#             #         "url": f"data:image/jpeg;base64,{base64_image}"
+#             #     },
+#             # },
+#         ]
+#     )]
+
+#     result = assist.chat(messages)
+#     return result
