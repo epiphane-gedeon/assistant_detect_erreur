@@ -368,7 +368,9 @@ class Assistant:
             Dictionary containing the response and metadata
         """
         try:
-            result = self.agent.invoke(messages)
+            print(messages)
+            result = self.agent.invoke({"messages": messages})
+            
             
             result_messages = [
                 msg for msg in result["messages"] if isinstance(msg, (HumanMessage, AIMessage)) and msg.content not in [None, "", " "]

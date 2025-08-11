@@ -36,6 +36,7 @@ def ask_question(request: QuestionRequest):
     # )]
     
     result = assist.chat(messages)
+    # print(result)
     return result['response']
 
 # @app.get("/ask")
