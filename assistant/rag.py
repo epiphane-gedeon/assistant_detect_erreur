@@ -86,7 +86,7 @@ class Assistant:
             base_url=self.base_url,
             client_kwargs={
                 "headers": {
-                    "Authorization": "Bearer e09dc85e4907f3c6a2aa21f08cb3d954596fbfe6385eb0165493332d39dfc674",
+                    "Authorization": "Bearer fbda85cca422db59caccfff5daae9286f4803bda6440b360ec30e52a8a1a1f77",
                     "Content-Type": "application/json",
                 }
             }
@@ -372,13 +372,13 @@ class Assistant:
             result = self.agent.invoke({"messages": messages})
             
             
-            result_messages = [
-                msg for msg in result["messages"] if isinstance(msg, (HumanMessage, AIMessage)) and msg.content not in [None, "", " "]
-            ]
+            # result_messages = [
+            #     msg for msg in result["messages"] if isinstance(msg, (HumanMessage, AIMessage)) and msg.content not in [None, "", " "]
+            # ]
 
             return {
-                # "response": result["messages"][-1].content,
-                "response": result_messages,
+                "response": result["messages"][-1].content,
+                # "response": result_messages,
                 "classification": result.get("error_classification"),
                 "message_count": len(result["messages"]),
                 "success": True,

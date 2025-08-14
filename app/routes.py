@@ -12,7 +12,7 @@ get_db = conn_db("faqdb", "faquser", "faqpass", "localhost", "5432")
 
 db_session = get_db
 
-assist=Assistant(base_url="http://116.109.110.233:55209")
+assist=Assistant(base_url="https://utc-advertisement-expensive-provided.trycloudflare.com")
 
 
 
@@ -37,7 +37,7 @@ def ask_question(request: QuestionRequest):
     
     result = assist.chat(messages)
     # print(result)
-    return result['response']
+    return result
 
 # @app.get("/ask")
 # def read_root():
